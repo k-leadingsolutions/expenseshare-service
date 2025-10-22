@@ -6,7 +6,8 @@ Project name: ExpenseShare
 
 ---
 ## CI/CD Pipeline
-![CI](https://github.com/k-leadingsolutions/expenseshare-service/actions/workflows/ci.yml/badge.svg)](https://github.com/k-leadingsolutions/expenseshare-service/blob/main/.github/workflows/ci.yml)
+![CI](https://github.com/k-leadingsolutions/expenseshare-service/actions/workflows/ci.yml/badge.svg)]
+(https://github.com/k-leadingsolutions/expenseshare-service/blob/main/.github/workflows/ci.yml)
 
 ## How to View
 
