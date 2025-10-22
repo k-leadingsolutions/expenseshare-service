@@ -5,7 +5,34 @@ This repository contains a production-minded backend for an expense sharing app 
 Project name: ExpenseShare
 
 ## CI/CD Pipeline
-![CI](https://github.com/k-leadingsolutions/expenseshare-service/actions/workflows/ci.yml/badge.svg)](https://github.com/k-leadingsolutions/expenseshare-service/blob/main/.github/workflows/ci.yml)
+[![CI](https://github.com/k-leadingsolutions/expenseshare-service/actions/workflows/ci.yml/badge.svg)](https://github.com/k-leadingsolutions/expenseshare-service/actions/workflows/ci.yml)
+
+## Features
+- Create & manage groups
+- Create & manage expenses within groups
+- Create & manage settlements between users
+- Calculate and list balances per user in a group
+
+## ✨ Why This Project?
+- **End-to-end backend skills:** API design, security, persistence, docs, and DevOps.
+- **Production-readiness:** Health checks, OpenAPI, concurrency, Dockerization, and migrations.
+- **Real-world patterns:** observability, error handling, and testability.
+
+## Tech Stack
+| Layer         | Technology                  |
+|---------------|-----------------------------|
+| Language      | Java 17                     |
+| Framework     | Spring Boot 3               |
+| DB            | H2 and PostgreSQL 15 Docker|
+| Migrations    | Flyway                      |
+| Auth          | OAuth2             |
+| Rate Limiting | Bucket4j                    |
+| Docs          | springdoc-openapi           |
+| Packaging     | Docker / Compose            |
+| CI/CD         | GitHub CI                   |
+| Prometheus       | Observability |
+| Jaeger       | Tracing                     |  
+| Messaging       | Kafka |
 
 Quickstart (H2, fast demo)
 1. Build:
