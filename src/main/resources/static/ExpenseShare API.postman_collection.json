@@ -1,0 +1,843 @@
+{
+	"info": {
+		"_postman_id": "d3b8d197-c75d-48b2-aa3e-3bc57e6cdab5",
+		"name": "ExpenseShare API",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "14260560"
+	},
+	"item": [
+		{
+			"name": "api",
+			"item": [
+				{
+					"name": "settlements",
+					"item": [
+						{
+							"name": "settle",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									},
+									{
+										"key": "Accept",
+										"value": "*/*"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"amount\": 2798.4032776778754,\n  \"groupId\": \"666ca8bd-3d44-c199-892f-211b74d2a823\",\n  \"payerId\": \"468267bf-b6d1-22ea-6b67-8368b91a7dfe\",\n  \"receiverId\": \"e21448db-e9ab-594e-316c-7ea49eeff938\"\n}",
+									"options": {
+										"raw": {
+											"headerFamily": "json",
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseUrl}}/api/settlements",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"settlements"
+									]
+								}
+							},
+							"response": [
+								{
+									"name": "OK",
+									"originalRequest": {
+										"method": "POST",
+										"header": [
+											{
+												"key": "Content-Type",
+												"value": "application/json"
+											},
+											{
+												"key": "Accept",
+												"value": "*/*"
+											},
+											{
+												"key": "Authorization",
+												"value": "<token>",
+												"description": "Added as a part of security scheme: oauth2"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "{\n  \"amount\": 2798.4032776778754,\n  \"groupId\": \"666ca8bd-3d44-c199-892f-211b74d2a823\",\n  \"payerId\": \"468267bf-b6d1-22ea-6b67-8368b91a7dfe\",\n  \"receiverId\": \"e21448db-e9ab-594e-316c-7ea49eeff938\"\n}",
+											"options": {
+												"raw": {
+													"headerFamily": "json",
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{baseUrl}}/api/settlements",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"api",
+												"settlements"
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "text",
+									"header": [
+										{
+											"key": "Content-Type",
+											"value": "*/*"
+										}
+									],
+									"cookie": [],
+									"body": "{\n  \"id\": \"57960c77-ec2c-c31b-7668-139298155c51\",\n  \"createdAt\": \"1952-08-22T01:25:00.577Z\",\n  \"updatedAt\": \"1994-03-06T12:42:25.497Z\",\n  \"version\": 1035,\n  \"groupId\": \"fb823ab5-e226-ac1a-8eee-140e251565d8\",\n  \"payerId\": \"4cb4f966-f3da-9f88-d0d9-68b826991aba\",\n  \"receiverId\": \"1a0759f0-3110-fe30-d4f1-598d57198a46\",\n  \"amount\": 1293.0743547938216,\n  \"expenseId\": \"9f80f727-47bd-be20-b775-2bc0d3773a49\",\n  \"status\": \"string\"\n}"
+								}
+							]
+						}
+					]
+				},
+				{
+					"name": "groups",
+					"item": [
+						{
+							"name": "{groupId}",
+							"item": [
+								{
+									"name": "members",
+									"item": [
+										{
+											"name": "{userId}",
+											"item": [
+												{
+													"name": "remove Member",
+													"request": {
+														"method": "DELETE",
+														"header": [],
+														"url": {
+															"raw": "{{baseUrl}}/api/groups/:groupId/members/:userId",
+															"host": [
+																"{{baseUrl}}"
+															],
+															"path": [
+																"api",
+																"groups",
+																":groupId",
+																"members",
+																":userId"
+															],
+															"variable": [
+																{
+																	"key": "groupId"
+																},
+																{
+																	"key": "userId"
+																}
+															]
+														}
+													},
+													"response": [
+														{
+															"name": "OK",
+															"originalRequest": {
+																"method": "DELETE",
+																"header": [
+																	{
+																		"key": "Authorization",
+																		"value": "<token>",
+																		"description": "Added as a part of security scheme: oauth2"
+																	}
+																],
+																"url": {
+																	"raw": "{{baseUrl}}/api/groups/:groupId/members/:userId",
+																	"host": [
+																		"{{baseUrl}}"
+																	],
+																	"path": [
+																		"api",
+																		"groups",
+																		":groupId",
+																		"members",
+																		":userId"
+																	],
+																	"variable": [
+																		{
+																			"key": "groupId"
+																		},
+																		{
+																			"key": "userId"
+																		}
+																	]
+																}
+															},
+															"status": "OK",
+															"code": 200,
+															"_postman_previewlanguage": "text",
+															"header": [],
+															"cookie": [],
+															"body": ""
+														}
+													]
+												}
+											]
+										},
+										{
+											"name": "add Member",
+											"request": {
+												"method": "POST",
+												"header": [
+													{
+														"key": "Content-Type",
+														"value": "application/json"
+													}
+												],
+												"body": {
+													"mode": "raw",
+													"raw": "{\n  \"userId\": \"4ac0082d-708f-4a97-9d28-94c0cbd0fcd9\"\n}",
+													"options": {
+														"raw": {
+															"headerFamily": "json",
+															"language": "json"
+														}
+													}
+												},
+												"url": {
+													"raw": "{{baseUrl}}/api/groups/:groupId/members",
+													"host": [
+														"{{baseUrl}}"
+													],
+													"path": [
+														"api",
+														"groups",
+														":groupId",
+														"members"
+													],
+													"variable": [
+														{
+															"key": "groupId",
+															"value": "17616b85-560f-4eaa-81c0-5f3e13e8e07f"
+														}
+													]
+												}
+											},
+											"response": [
+												{
+													"name": "OK",
+													"originalRequest": {
+														"method": "POST",
+														"header": [
+															{
+																"key": "Content-Type",
+																"value": "application/json"
+															},
+															{
+																"key": "Authorization",
+																"value": "<token>",
+																"description": "Added as a part of security scheme: oauth2"
+															}
+														],
+														"body": {
+															"mode": "raw",
+															"raw": "{\n  \"userId\": \"64468003-132d-4b7d-db22-be3654f2f002\"\n}",
+															"options": {
+																"raw": {
+																	"headerFamily": "json",
+																	"language": "json"
+																}
+															}
+														},
+														"url": {
+															"raw": "{{baseUrl}}/api/groups/:groupId/members",
+															"host": [
+																"{{baseUrl}}"
+															],
+															"path": [
+																"api",
+																"groups",
+																":groupId",
+																"members"
+															],
+															"variable": [
+																{
+																	"key": "groupId"
+																}
+															]
+														}
+													},
+													"status": "OK",
+													"code": 200,
+													"_postman_previewlanguage": "text",
+													"header": [],
+													"cookie": [],
+													"body": ""
+												}
+											]
+										}
+									]
+								},
+								{
+									"name": "leave",
+									"item": [
+										{
+											"name": "leave Group",
+											"request": {
+												"method": "POST",
+												"header": [],
+												"url": {
+													"raw": "{{baseUrl}}/api/groups/:groupId/leave",
+													"host": [
+														"{{baseUrl}}"
+													],
+													"path": [
+														"api",
+														"groups",
+														":groupId",
+														"leave"
+													],
+													"variable": [
+														{
+															"key": "groupId"
+														}
+													]
+												}
+											},
+											"response": [
+												{
+													"name": "OK",
+													"originalRequest": {
+														"method": "POST",
+														"header": [
+															{
+																"key": "Authorization",
+																"value": "<token>",
+																"description": "Added as a part of security scheme: oauth2"
+															}
+														],
+														"url": {
+															"raw": "{{baseUrl}}/api/groups/:groupId/leave",
+															"host": [
+																"{{baseUrl}}"
+															],
+															"path": [
+																"api",
+																"groups",
+																":groupId",
+																"leave"
+															],
+															"variable": [
+																{
+																	"key": "groupId"
+																}
+															]
+														}
+													},
+													"status": "OK",
+													"code": 200,
+													"_postman_previewlanguage": "text",
+													"header": [],
+													"cookie": [],
+													"body": ""
+												}
+											]
+										}
+									]
+								},
+								{
+									"name": "expenses",
+									"item": [
+										{
+											"name": "list Expenses",
+											"request": {
+												"method": "GET",
+												"header": [
+													{
+														"key": "Accept",
+														"value": "*/*"
+													}
+												],
+												"url": {
+													"raw": "{{baseUrl}}/api/groups/:groupId/expenses",
+													"host": [
+														"{{baseUrl}}"
+													],
+													"path": [
+														"api",
+														"groups",
+														":groupId",
+														"expenses"
+													],
+													"variable": [
+														{
+															"key": "groupId"
+														}
+													]
+												}
+											},
+											"response": [
+												{
+													"name": "OK",
+													"originalRequest": {
+														"method": "GET",
+														"header": [
+															{
+																"key": "Accept",
+																"value": "*/*"
+															},
+															{
+																"key": "Authorization",
+																"value": "<token>",
+																"description": "Added as a part of security scheme: oauth2"
+															}
+														],
+														"url": {
+															"raw": "{{baseUrl}}/api/groups/:groupId/expenses",
+															"host": [
+																"{{baseUrl}}"
+															],
+															"path": [
+																"api",
+																"groups",
+																":groupId",
+																"expenses"
+															],
+															"variable": [
+																{
+																	"key": "groupId"
+																}
+															]
+														}
+													},
+													"status": "OK",
+													"code": 200,
+													"_postman_previewlanguage": "text",
+													"header": [
+														{
+															"key": "Content-Type",
+															"value": "*/*"
+														}
+													],
+													"cookie": [],
+													"body": "[\n  {\n    \"id\": \"2fadbe6a-0789-5000-3949-bf11fe30ece2\",\n    \"groupId\": \"d3e31799-472f-bb41-c794-3e5965f0f6fa\",\n    \"createdBy\": \"9aa663ac-9c1f-7012-3542-ea37f205c806\",\n    \"description\": \"string\",\n    \"amount\": 2866.2332608830598,\n    \"currency\": \"string\",\n    \"createdAt\": \"1977-08-24T00:00:11.376Z\"\n  },\n  {\n    \"id\": \"542b787b-6654-81ee-3a87-1006ba3e549b\",\n    \"groupId\": \"5f75600c-e253-8667-5a85-d4966015c974\",\n    \"createdBy\": \"b3df8efb-a248-3f70-6373-2c5dbe15d5c0\",\n    \"description\": \"string\",\n    \"amount\": 8898.832075815379,\n    \"currency\": \"string\",\n    \"createdAt\": \"2007-12-19T13:25:37.142Z\"\n  }\n]"
+												}
+											]
+										}
+									]
+								},
+								{
+									"name": "balances",
+									"item": [
+										{
+											"name": "list Balances",
+											"request": {
+												"method": "GET",
+												"header": [
+													{
+														"key": "Accept",
+														"value": "*/*"
+													}
+												],
+												"url": {
+													"raw": "{{baseUrl}}/api/groups/:groupId/balances",
+													"host": [
+														"{{baseUrl}}"
+													],
+													"path": [
+														"api",
+														"groups",
+														":groupId",
+														"balances"
+													],
+													"variable": [
+														{
+															"key": "groupId"
+														}
+													]
+												}
+											},
+											"response": [
+												{
+													"name": "OK",
+													"originalRequest": {
+														"method": "GET",
+														"header": [
+															{
+																"key": "Accept",
+																"value": "*/*"
+															},
+															{
+																"key": "Authorization",
+																"value": "<token>",
+																"description": "Added as a part of security scheme: oauth2"
+															}
+														],
+														"url": {
+															"raw": "{{baseUrl}}/api/groups/:groupId/balances",
+															"host": [
+																"{{baseUrl}}"
+															],
+															"path": [
+																"api",
+																"groups",
+																":groupId",
+																"balances"
+															],
+															"variable": [
+																{
+																	"key": "groupId"
+																}
+															]
+														}
+													},
+													"status": "OK",
+													"code": 200,
+													"_postman_previewlanguage": "text",
+													"header": [
+														{
+															"key": "Content-Type",
+															"value": "*/*"
+														}
+													],
+													"cookie": [],
+													"body": "[\n  {\n    \"userId\": \"916b140a-1a95-b8ae-fd8e-ff4e5a2a8d45\",\n    \"balance\": 3328.3618906656543\n  },\n  {\n    \"userId\": \"f29ac6fb-aaf4-2aeb-fe47-ee37721bde89\",\n    \"balance\": 4581.109078205787\n  }\n]"
+												}
+											]
+										}
+									]
+								}
+							]
+						},
+						{
+							"name": "my Groups",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "*/*"
+									}
+								],
+								"url": {
+									"raw": "{{baseUrl}}/api/groups",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"groups"
+									]
+								}
+							},
+							"response": [
+								{
+									"name": "OK",
+									"originalRequest": {
+										"method": "GET",
+										"header": [
+											{
+												"key": "Accept",
+												"value": "*/*"
+											},
+											{
+												"key": "Authorization",
+												"value": "<token>",
+												"description": "Added as a part of security scheme: oauth2"
+											}
+										],
+										"url": {
+											"raw": "{{baseUrl}}/api/groups",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"api",
+												"groups"
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "text",
+									"header": [
+										{
+											"key": "Content-Type",
+											"value": "*/*"
+										}
+									],
+									"cookie": [],
+									"body": "[\n  {\n    \"id\": \"4a3b6834-2f45-f964-ed86-1483310df232\",\n    \"name\": \"string\",\n    \"createdBy\": \"fc2381b5-6a78-dc1a-732c-b0834e4413f8\",\n    \"createdAt\": \"2008-01-17T19:27:21.383Z\"\n  },\n  {\n    \"id\": \"d7cd04d7-43f5-d33b-4cc2-3e8667bf0640\",\n    \"name\": \"string\",\n    \"createdBy\": \"16187bcc-3909-2b79-9f37-ec33bcd30f39\",\n    \"createdAt\": \"1993-12-22T08:25:21.733Z\"\n  }\n]"
+								}
+							]
+						},
+						{
+							"name": "create Group",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									},
+									{
+										"key": "Accept",
+										"value": "*/*"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"name\": \"string\"\n}",
+									"options": {
+										"raw": {
+											"headerFamily": "json",
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseUrl}}/api/groups",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"groups"
+									]
+								}
+							},
+							"response": [
+								{
+									"name": "OK",
+									"originalRequest": {
+										"method": "POST",
+										"header": [
+											{
+												"key": "Content-Type",
+												"value": "application/json"
+											},
+											{
+												"key": "Accept",
+												"value": "*/*"
+											},
+											{
+												"key": "Authorization",
+												"value": "<token>",
+												"description": "Added as a part of security scheme: oauth2"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "{\n  \"name\": \"string\"\n}",
+											"options": {
+												"raw": {
+													"headerFamily": "json",
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{baseUrl}}/api/groups",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"api",
+												"groups"
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "text",
+									"header": [
+										{
+											"key": "Content-Type",
+											"value": "*/*"
+										}
+									],
+									"cookie": [],
+									"body": "{\n  \"id\": \"39f7ff8a-2ed8-7e1e-52a9-bc1a8b63df1b\",\n  \"name\": \"string\",\n  \"createdBy\": \"2e950f65-ccd6-4c9e-2180-7da7ac05f284\",\n  \"createdAt\": \"1974-05-20T22:52:26.626Z\"\n}"
+								}
+							]
+						}
+					]
+				},
+				{
+					"name": "expenses",
+					"item": [
+						{
+							"name": "create Expense",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									},
+									{
+										"key": "Accept",
+										"value": "*/*"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"amount\": 8377.228531354087,\n  \"currency\": \"string\",\n  \"description\": \"string\",\n  \"groupId\": \"f16b7e67-e0c9-a07e-1b30-50c80342939e\",\n  \"payerId\": \"f3817bed-3d0a-9529-02ae-394d1ca41c4a\",\n  \"splits\": [\n    {\n      \"amount\": 3543.374712598145,\n      \"shareType\": \"string\",\n      \"userId\": \"478f69bf-7538-487c-cfb8-7928fbe813b2\"\n    }\n  ]\n}",
+									"options": {
+										"raw": {
+											"headerFamily": "json",
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseUrl}}/api/expenses",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"expenses"
+									]
+								}
+							},
+							"response": [
+								{
+									"name": "OK",
+									"originalRequest": {
+										"method": "POST",
+										"header": [
+											{
+												"key": "Content-Type",
+												"value": "application/json"
+											},
+											{
+												"key": "Accept",
+												"value": "*/*"
+											},
+											{
+												"key": "Authorization",
+												"value": "<token>",
+												"description": "Added as a part of security scheme: oauth2"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "{\n  \"amount\": 8377.228531354087,\n  \"currency\": \"string\",\n  \"description\": \"string\",\n  \"groupId\": \"f16b7e67-e0c9-a07e-1b30-50c80342939e\",\n  \"payerId\": \"f3817bed-3d0a-9529-02ae-394d1ca41c4a\",\n  \"splits\": [\n    {\n      \"amount\": 3543.374712598145,\n      \"shareType\": \"string\",\n      \"userId\": \"478f69bf-7538-487c-cfb8-7928fbe813b2\"\n    }\n  ]\n}",
+											"options": {
+												"raw": {
+													"headerFamily": "json",
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{baseUrl}}/api/expenses",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"api",
+												"expenses"
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "text",
+									"header": [
+										{
+											"key": "Content-Type",
+											"value": "*/*"
+										}
+									],
+									"cookie": [],
+									"body": "{\n  \"id\": \"4ed65c52-a9b7-8d96-704e-aff08b85aebe\",\n  \"createdAt\": \"1948-02-24T06:01:11.696Z\",\n  \"updatedAt\": \"1977-06-13T14:26:06.794Z\",\n  \"version\": 3159,\n  \"groupId\": \"97ae39ae-1267-65f1-6ae9-3a9e696446ed\",\n  \"createdBy\": \"6bb847d4-bfd8-1eef-2c6f-38b5a5b083be\",\n  \"description\": \"string\",\n  \"amount\": 8746.835264318202,\n  \"currency\": \"string\"\n}"
+								}
+							]
+						}
+					]
+				}
+			]
+		}
+	],
+	"auth": {
+		"type": "oauth2",
+		"oauth2": [
+			{
+				"key": "client_authentication",
+				"value": "body",
+				"type": "string"
+			},
+			{
+				"key": "redirect_uri",
+				"value": "https://oauth.pstmn.io/v1/callback",
+				"type": "string"
+			},
+			{
+				"key": "authUrl",
+				"value": "https://accounts.google.com/o/oauth2/v2/auth",
+				"type": "string"
+			},
+			{
+				"key": "grant_type",
+				"value": "authorization_code_with_pkce",
+				"type": "string"
+			},
+			{
+				"key": "scope",
+				"value": "openid profile email",
+				"type": "string"
+			},
+			{
+				"key": "clientSecret",
+				"value": "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",
+				"type": "string"
+			},
+			{
+				"key": "clientId",
+				"value": "1098641063827-6crdh5ulm1gphqf63k6vs2qjkmqo5mfj.apps.googleusercontent.com",
+				"type": "string"
+			},
+			{
+				"key": "accessTokenUrl",
+				"value": "https://oauth2.googleapis.com/token",
+				"type": "string"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"requests": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"requests": {},
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "baseUrl",
+			"value": "http://localhost:8082"
+		}
+	]
+}

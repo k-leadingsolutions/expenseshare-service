@@ -1,0 +1,129 @@
+name: CI - build, test, Docker image (integration)
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+env:
+  IMAGE_NAME: ghcr.io/${{ github.repository_owner }}/expenseshare
+
+jobs:
+  build-and-push-integration:
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: read
+      packages: write
+      id-token: write
+
+    services:
+      postgres:
+        image: postgres:15
+        env:
+          POSTGRES_DB: ${{ secrets.POSTGRES_DB }}
+          POSTGRES_USER: ${{ secrets.POSTGRES_USER }}
+          POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U ${{ secrets.POSTGRES_USER }} -d ${{ secrets.POSTGRES_DB }}"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+          cache: 'maven'
+
+      - name: Cache Maven local repository
+        uses: actions/cache@v4
+        with:
+          path: ~/.m2/repository
+          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+          restore-keys: |
+            ${{ runner.os }}-maven-
+
+      - name: Create .env from GitHub Secrets (runner-local)
+        run: |
+          set -euo pipefail
+          : > .env
+          printf "%s\n" "POSTGRES_USER=${{ secrets.POSTGRES_USER }}" >> .env
+          printf "%s\n" "POSTGRES_PASSWORD=${{ secrets.POSTGRES_PASSWORD }}" >> .env
+          printf "%s\n" "POSTGRES_DB=${{ secrets.POSTGRES_DB }}" >> .env
+          printf "%s\n" "APP_PORT=${{ secrets.APP_PORT }}" >> .env
+          printf "%s\n" "GOOGLE_CLIENT_ID=${{ secrets.GOOGLE_CLIENT_ID }}" >> .env
+          printf "%s\n" "GOOGLE_CLIENT_SECRET=${{ secrets.GOOGLE_CLIENT_SECRET }}" >> .env
+        shell: bash
+
+      - name: Show .env summary (safe)
+        run: |
+          echo ".env created in runner (not printed for security). Size:"
+          stat --printf="%s bytes\n" .env || wc -c .env
+        shell: bash
+
+      - name: Wait for Postgres (sanity)
+        run: |
+          for i in {1..30}; do
+            if docker run --rm --network host postgres:15 pg_isready -h postgres -U ${{ secrets.POSTGRES_USER }} -d ${{ secrets.POSTGRES_DB }} >/dev/null 2>&1; then
+              echo "Postgres ready"
+              exit 0
+            fi
+            echo "Waiting for Postgres... ($i)"
+            sleep 2
+          done
+          echo "Postgres did not become ready" >&2
+          exit 1
+        shell: bash
+        continue-on-error: true
+
+      - name: Run Maven tests and package (integration with Postgres)
+        env:
+          SPRING_PROFILES_ACTIVE: docker
+          SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/${{ secrets.POSTGRES_DB }}
+          SPRING_DATASOURCE_USERNAME: ${{ secrets.POSTGRES_USER }}
+          SPRING_DATASOURCE_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
+        run: mvn -B -DskipTests=false clean package
+
+      - name: Log in to GitHub Container Registry
+        uses: docker/login-action@v2
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v4
+        with:
+          context: .
+          push: true
+          tags: |
+            ${{ env.IMAGE_NAME }}:${{ github.sha }}
+            ${{ env.IMAGE_NAME }}:latest
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+      - name: Upload build artifact (jar)
+        uses: actions/upload-artifact@v4
+        with:
+          name: expenseshare-jar
+          path: target/*.jar
+
+      - name: Upload test reports (if present)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-reports
+          path: target/surefire-reports/**
+
+      - name: Post job summary (optional)
+        if: always()
+        run: echo "CI finished (status: ${{ job.status }})"
