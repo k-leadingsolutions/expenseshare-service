@@ -1,5 +1,7 @@
-# Fixed CI workflow: use docker run to start Postgres so we can pass secrets at runtime,
-# and ensure every step has a run/uses/with block (fixes the validation errors).
+# CI workflow: build, test, Docker image (integration)
+# Updated: use registry-based build cache to avoid "Cache export is not supported for the docker driver"
+# (the docker driver cannot export cache to GitHub Actions' default cache backend; registry cache works
+# because we are already logging in to ghcr.io).
 name: CI - build, test, Docker image (integration)
 
 on:
@@ -102,7 +104,7 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Build and push Docker image
+      - name: Build and push Docker image (use registry cache)
         uses: docker/build-push-action@v4
         with:
           context: .
@@ -110,8 +112,9 @@ jobs:
           tags: |
             ${{ env.IMAGE_NAME }}:${{ github.sha }}
             ${{ env.IMAGE_NAME }}:latest
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
+          # Use registry cache backend (ghcr) instead of gha/cache which requires containerd backend
+          cache-from: type=registry,ref=${{ env.IMAGE_NAME }}:buildcache
+          cache-to: type=registry,ref=${{ env.IMAGE_NAME }}:buildcache,mode=max
 
       - name: Upload build artifact (jar)
         uses: actions/upload-artifact@v4
