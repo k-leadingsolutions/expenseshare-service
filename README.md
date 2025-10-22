@@ -88,7 +88,8 @@ Example endpoints (from the spec)
 
 ## Contributing / Feedback
 
-Feedback, bug reports, and pull requests are welcome!
+Feedback, bug reports, and pull requests are welcome! 
+Email: keamp84@gmail.com
 
 ---
 
