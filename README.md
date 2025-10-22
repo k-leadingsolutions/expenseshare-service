@@ -14,7 +14,7 @@ Project name: ExpenseShare
 ![CI](https://github.com/k-leadingsolutions/expenseshare-service/actions/workflows/ci.yml/badge.svg)]
 (https://github.com/k-leadingsolutions/expenseshare-service/blob/main/.github/workflows/ci.yml)
 
-## How to View
+## How to View Pipeline
 
 - Click the **CI badge** at the top of this README to see build details and history on GitHub.
 
