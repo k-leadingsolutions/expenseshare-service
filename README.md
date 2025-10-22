@@ -1,4 +1,3 @@
-```markdown
 # ExpenseShare — Expense Sharing App (Ledger-first)
 
 This repository contains a production-minded backend for an expense sharing app (ledger-first design).
