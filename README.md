@@ -92,6 +92,15 @@ Feedback, bug reports, and pull requests are welcome!
 Email: keamp84@gmail.com
 
 ---
+## Future Improvements
+- Add more comprehensive tests (unit, integration, e2e).
+- Implement additional features like notifications, user profiles, etc.
+- Enhance error handling and logging.
+- Optimize performance for large datasets. - Pagination, caching, etc.
+- Add frontend client (web/mobile) to interact with the API.
+- Implement distributed tracing with Jaeger.
+- Add CI/CD deployment to cloud (e.g. AWS, GCP).
+- Implement GraphQL API alongside REST.
 
 ## License
 
