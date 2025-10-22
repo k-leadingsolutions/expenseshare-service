@@ -126,4 +126,3 @@ jobs:
 
       - name: Post job summary (optional)
         if: always()
-        run: echo "CI finished (status: ${{ job.status }})"
