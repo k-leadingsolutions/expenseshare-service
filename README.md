@@ -4,6 +4,9 @@
 This repository contains a production-minded backend for an expense sharing app (ledger-first design).
 Project name: ExpenseShare
 
+## CI/CD Pipeline
+![CI](https://github.com/k-leadingsolutions/expenseshare-service/actions/workflows/ci.yml/badge.svg)](https://github.com/k-leadingsolutions/expenseshare-service/blob/main/.github/workflows/ci.yml)
+
 Quickstart (H2, fast demo)
 1. Build:
    mvn clean package -DskipTests
