@@ -45,7 +45,7 @@ Quickstart (H2, fast demo)
 1. Build:
    mvn clean package -DskipTests
 2. Run:
-   java -jar target/expenseshare-0.0.1-SNAPSHOT.jar --spring.profiles.active=h2
+   java -jar target/expenseshare-0.0.1-SNAPSHOT.jar --spring.profiles.active=devF
 
 Open:
 - Swagger UI: http://localhost:8082/swagger-ui.html
