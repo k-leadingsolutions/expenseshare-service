@@ -1,7 +1,5 @@
 # CI workflow: build, test, Docker image (integration)
-# Updated: use registry-based build cache to avoid "Cache export is not supported for the docker driver"
-# (the docker driver cannot export cache to GitHub Actions' default cache backend; registry cache works
-# because we are already logging in to ghcr.io).
+# Updated to remove build cache options (no cache) to avoid buildx cache backend errors
 name: CI - build, test, Docker image (integration)
 
 on:
@@ -104,7 +102,12 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Build and push Docker image (use registry cache)
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+        with:
+          install: true
+
+      - name: Build and push Docker image (no cache)
         uses: docker/build-push-action@v4
         with:
           context: .
@@ -112,9 +115,6 @@ jobs:
           tags: |
             ${{ env.IMAGE_NAME }}:${{ github.sha }}
             ${{ env.IMAGE_NAME }}:latest
-          # Use registry cache backend (ghcr) instead of gha/cache which requires containerd backend
-          cache-from: type=registry,ref=${{ env.IMAGE_NAME }}:buildcache
-          cache-to: type=registry,ref=${{ env.IMAGE_NAME }}:buildcache,mode=max
 
       - name: Upload build artifact (jar)
         uses: actions/upload-artifact@v4
