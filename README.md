@@ -30,16 +30,16 @@ Project name: ExpenseShare
 |---------------|-----------------------------|
 | Language      | Java 17                     |
 | Framework     | Spring Boot 3               |
-| DB            | H2 and PostgreSQL 15 Docker|
+| DB            | H2 and PostgreSQL 15        |
 | Migrations    | Flyway                      |
-| Auth          | OAuth2             |
+| Auth          | OAuth2                      |
 | Rate Limiting | Bucket4j                    |
 | Docs          | springdoc-openapi           |
 | Packaging     | Docker / Compose            |
 | CI/CD         | GitHub CI                   |
 | Prometheus       | Observability |
-| Jaeger       | Tracing                     |  
-| Messaging       | Kafka |
+| Jaeger       | Tracing                      |  
+| Messaging       | Kafka                     |
 
 Quickstart (H2, fast demo)
 1. Build:
