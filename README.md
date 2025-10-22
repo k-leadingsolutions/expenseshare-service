@@ -4,6 +4,12 @@
 This repository contains a production-minded backend for an expense sharing app (ledger-first design).
 Project name: ExpenseShare
 
+
+## ✨ Why This Project?
+- **End-to-end backend skills:** API design, security, persistence, docs, and DevOps.
+- **Production-readiness:** Health checks, OpenAPI, concurrency, Dockerization, and migrations.
+- **Real-world patterns:** observability, error handling, and testability.
+
 ---
 ## CI/CD Pipeline
 ![CI](https://github.com/k-leadingsolutions/expenseshare-service/actions/workflows/ci.yml/badge.svg)]
@@ -19,10 +25,6 @@ Project name: ExpenseShare
 - Create & manage settlements between users
 - Calculate and list balances per user in a group
 
-## ✨ Why This Project?
-- **End-to-end backend skills:** API design, security, persistence, docs, and DevOps.
-- **Production-readiness:** Health checks, OpenAPI, concurrency, Dockerization, and migrations.
-- **Real-world patterns:** observability, error handling, and testability.
 
 ## Tech Stack
 | Layer         | Technology                  |
