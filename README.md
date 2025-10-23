@@ -1,7 +1,58 @@
 # ExpenseShare — Expense Sharing App (Ledger-first)
 
 This repository contains a production-minded backend for an expense sharing app (ledger-first design).
-Project name: ExpenseShare
+Project name: ExpenseShare 
+Description: A backend service for managing shared expenses among users in groups, with features for tracking expenses, settlements, and balances.
+It’s a modular Spring Boot application designed with clear separation between the web, business, and persistence layers, secured with Google OAuth2, and ensures data consistency through transactional operations.
+* Future architectural improvements planned include implementing event sourcing and CQRS patterns to enhance scalability and maintainability.
+* The API is documented with OpenAPI (Swagger) for easy integration and exploration.
+* Observability is integrated using Prometheus for metrics and Jaeger for tracing.
+* The service is containerized with Docker and orchestrated using Docker Compose for easy deployment and scalability.
+  ┌────────────────────────────────────┐
+  │           Google OAuth2            │
+  │  (Authentication Provider)         │
+  └────────────────────────────────────┘
+  │
+  ▼
+  ┌──────────────────────────────────────────────────────────────────┐
+  │                        ExpenseShare Service                      │
+  │                                                                  │
+  │  ┌────────────────────────────────────────────────────────────┐  │
+  │  │                     Controller Layer                        │  │
+  │  │  - GroupController                                          │  │
+  │  │  - ExpenseController                                        │  │
+  │  │  - SettlementController                                     │  │
+  │  │  REST APIs → /api/groups, /api/expenses, /api/settlements   │  │
+  │  └────────────────────────────────────────────────────────────┘  │
+  │                              │                                   │
+  │                              ▼                                   │
+  │  ┌────────────────────────────────────────────────────────────┐  │
+  │  │                       Service Layer                        │  │
+  │  │  - GroupService: group & member management                 │  │
+  │  │  - ExpenseService: add expenses, split logic               │  │
+  │  │  - SettlementService: transactional settlements             │  │
+  │  │  - BalanceService: compute/recompute balances               │  │
+  │  │  @Transactional ensures ACID updates                        │  │
+  │  └────────────────────────────────────────────────────────────┘  │
+  │                              │                                   │
+  │                              ▼                                   │
+  │  ┌────────────────────────────────────────────────────────────┐  │
+  │  │                       Repository Layer                     │  │
+  │  │  - UserRepository                                          │  │
+  │  │  - GroupRepository                                         │  │
+  │  │  - ExpenseRepository                                       │  │
+  │  │  - SettlementRepository                                    │  │
+  │  │  - UserGroupBalanceRepository                              │  │
+  │  │  (Spring Data JPA + H2 DB)                                 │  │
+  │  └────────────────────────────────────────────────────────────┘  │
+  │                              │                                   │
+  │                              ▼                                   │
+  │  ┌────────────────────────────────────────────────────────────┐  │
+  │  │                           Database                         │  │
+  │  │          H2 (for dev) / PostgreSQL (for prod)               │  │
+  │  │  Tables: users, groups, expenses, settlements, balances     │  │
+  │  └────────────────────────────────────────────────────────────┘  │
+  └──────────────────────────────────────────────────────────────────┘
 
 
 ## ✨ Why This Project?
@@ -45,7 +96,7 @@ Quickstart (H2, fast demo)
 1. Build:
    mvn clean package -DskipTests
 2. Run:
-   java -jar target/expenseshare-0.0.1-SNAPSHOT.jar --spring.profiles.active=devF
+   java -jar target/expenseshare-0.0.1-SNAPSHOT.jar --spring.profiles.active=dev
 
 Open:
 - Swagger UI: http://localhost:8082/swagger-ui.html
@@ -93,14 +144,16 @@ Email: keamp84@gmail.com
 
 ---
 ## Future Improvements
+- Migrate to microservices architecture. (Split by domain: Group, Expense, Settlement, Auth)
 - Add more comprehensive tests (unit, integration, e2e).
 - Implement additional features like notifications, user profiles, etc.
 - Enhance error handling and logging.
-- Optimize performance for large datasets. - Pagination, caching, etc.
+- Optimize performance for large datasets. — Pagination, caching, etc.
 - Add frontend client (web/mobile) to interact with the API.
 - Implement distributed tracing with Jaeger.
 - Add CI/CD deployment to cloud (e.g. AWS, GCP).
 - Implement GraphQL API alongside REST.
+
 
 ## License
 
