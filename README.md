@@ -8,51 +8,9 @@ It’s a modular Spring Boot application designed with clear separation between 
 * The API is documented with OpenAPI (Swagger) for easy integration and exploration.
 * Observability is integrated using Prometheus for metrics and Jaeger for tracing.
 * The service is containerized with Docker and orchestrated using Docker Compose for easy deployment and scalability.
-  ┌────────────────────────────────────┐
-  │           Google OAuth2            │
-  │  (Authentication Provider)         │
-  └────────────────────────────────────┘
-  │
-  ▼
-  ┌──────────────────────────────────────────────────────────────────┐
-  │                        ExpenseShare Service                      │
-  │                                                                  │
-  │  ┌────────────────────────────────────────────────────────────┐  │
-  │  │                     Controller Layer                        │  │
-  │  │  - GroupController                                          │  │
-  │  │  - ExpenseController                                        │  │
-  │  │  - SettlementController                                     │  │
-  │  │  REST APIs → /api/groups, /api/expenses, /api/settlements   │  │
-  │  └────────────────────────────────────────────────────────────┘  │
-  │                              │                                   │
-  │                              ▼                                   │
-  │  ┌────────────────────────────────────────────────────────────┐  │
-  │  │                       Service Layer                        │  │
-  │  │  - GroupService: group & member management                 │  │
-  │  │  - ExpenseService: add expenses, split logic               │  │
-  │  │  - SettlementService: transactional settlements             │  │
-  │  │  - BalanceService: compute/recompute balances               │  │
-  │  │  @Transactional ensures ACID updates                        │  │
-  │  └────────────────────────────────────────────────────────────┘  │
-  │                              │                                   │
-  │                              ▼                                   │
-  │  ┌────────────────────────────────────────────────────────────┐  │
-  │  │                       Repository Layer                     │  │
-  │  │  - UserRepository                                          │  │
-  │  │  - GroupRepository                                         │  │
-  │  │  - ExpenseRepository                                       │  │
-  │  │  - SettlementRepository                                    │  │
-  │  │  - UserGroupBalanceRepository                              │  │
-  │  │  (Spring Data JPA + H2 DB)                                 │  │
-  │  └────────────────────────────────────────────────────────────┘  │
-  │                              │                                   │
-  │                              ▼                                   │
-  │  ┌────────────────────────────────────────────────────────────┐  │
-  │  │                           Database                         │  │
-  │  │          H2 (for dev) / PostgreSQL (for prod)               │  │
-  │  │  Tables: users, groups, expenses, settlements, balances     │  │
-  │  └────────────────────────────────────────────────────────────┘  │
-  └──────────────────────────────────────────────────────────────────┘
+---
+
+[ExpenseShare Architecture Diagram](src/main/resources/assets/expenseshare-diagram.png)
 
 
 ## ✨ Why This Project?
