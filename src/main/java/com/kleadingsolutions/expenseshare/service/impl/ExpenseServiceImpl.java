@@ -10,14 +10,12 @@ import com.kleadingsolutions.expenseshare.model.Balance;
 import com.kleadingsolutions.expenseshare.model.Expense;
 import com.kleadingsolutions.expenseshare.model.ExpenseSplit;
 import com.kleadingsolutions.expenseshare.model.LedgerEntry;
-import com.kleadingsolutions.expenseshare.repository.BalanceRepository;
-import com.kleadingsolutions.expenseshare.repository.ExpenseRepository;
-import com.kleadingsolutions.expenseshare.repository.ExpenseSplitRepository;
-import com.kleadingsolutions.expenseshare.repository.GroupMemberRepository;
-import com.kleadingsolutions.expenseshare.repository.LedgerEntryRepository;
+import com.kleadingsolutions.expenseshare.repository.*;
 import com.kleadingsolutions.expenseshare.service.ExpenseService;
 import com.kleadingsolutions.expenseshare.util.MoneyUtils;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -35,6 +33,7 @@ import java.util.stream.Collectors;
  */
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class ExpenseServiceImpl implements ExpenseService {
 
     private final ExpenseRepository expenseRepository;
@@ -168,11 +167,20 @@ public class ExpenseServiceImpl implements ExpenseService {
                 .groupId(groupId)
                 .userId(userId)
                 .createdBy(actorId)
-                .balance(MoneyUtils.scale(null))
+                .balance(MoneyUtils.scale(BigDecimal.ZERO))
                 .build();
-        Balance saved = balanceRepository.save(newB);
-        // lock and return
-        return balanceRepository.findLockedByGroupIdAndUserId(groupId, userId).orElse(saved);
+        try {
+            // Attempt to insert the new balance
+            Balance saved = balanceRepository.save(newB);
+            // Now acquire a PESSIMISTIC_WRITE lock on the saved row and return it
+            return balanceRepository.findLockedByGroupIdAndUserId(groupId, userId).orElse(saved);
+        } catch (DataIntegrityViolationException ex) {
+            // Concurrent insert happened (unique constraint). Re-query with lock and return the existing row.
+            Optional<Balance> maybeLocked = balanceRepository.findLockedByGroupIdAndUserId(groupId, userId);
+            // Log full context for troubleshooting and throw an explicit exception.
+            log.error("Balance insert conflict but no row found for group={} user={} actor={}", groupId, userId, actorId, ex);
+            return maybeLocked.orElseThrow(() -> new IllegalStateException("Balance insert conflict and no row found", ex));
+        }
     }
 
     private Expense saveExpense(CreateExpenseRequest request, UUID actorId, UUID groupId, BigDecimal normalizedTotal) {
