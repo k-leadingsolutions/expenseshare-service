@@ -76,6 +76,7 @@ class BalanceServiceTest {
     void recomputeAndReconcileGroup_updatesExistingBalances() {
         Balance b1 = Balance.builder().groupId(groupId).userId(userId).balance(new BigDecimal("1.00")).build();
         when(balanceRepository.findByGroupId(groupId)).thenReturn(java.util.List.of(b1));
+        when(balanceRepository.findLockedByGroupIdAndUserId(groupId, userId)).thenReturn(Optional.of(b1));
         when(ledgerEntryRepository.sumAmountByGroupIdAndUserId(groupId, userId)).thenReturn(new BigDecimal("5.00"));
 
         balanceService.recomputeAndReconcileGroup(groupId);
