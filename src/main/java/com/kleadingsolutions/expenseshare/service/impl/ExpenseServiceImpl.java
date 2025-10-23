@@ -88,7 +88,7 @@ public class ExpenseServiceImpl implements ExpenseService {
         // Build per-user balance deltas (accumulate duplicates)
         Map<UUID, BigDecimal> userDeltas = getUserDeltas(request, payerId);
 
-        // Participants = all unique split users + payer (ensure payer is included even if not listed in splits)
+        // Participants = all unique split users and payer (ensure payer is included even if not listed in splits)
         Set<UUID> participants = request.getSplits().stream()
                 .map(ExpenseSplitDto::getUserId)
                 .collect(Collectors.toCollection(LinkedHashSet::new));

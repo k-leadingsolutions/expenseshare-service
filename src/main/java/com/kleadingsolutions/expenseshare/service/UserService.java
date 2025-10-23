@@ -18,7 +18,6 @@ public class UserService {
         this.repo = repo;
     }
 
-    // inside your existing UserService
     @Transactional
     public User findOrCreate(String provider, String providerId, String email, String name) {
         String oauthId = provider + ":" + providerId; // e.g. "google:1164442009..."
