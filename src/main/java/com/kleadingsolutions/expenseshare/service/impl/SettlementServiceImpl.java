@@ -21,6 +21,9 @@ import org.springframework.dao.OptimisticLockingFailureException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.Arrays;
@@ -38,6 +41,8 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class SettlementServiceImpl implements SettlementService {
 
+    private static final Logger log = LoggerFactory.getLogger(SettlementServiceImpl.class);
+
     private static final int MAX_RETRIES = 3;
     private static final long RETRY_BACKOFF_MS = 50L;
 
@@ -50,13 +55,18 @@ public class SettlementServiceImpl implements SettlementService {
     @Transactional
     @LogExecution(includeArgs = true, includeResult = false, warnThresholdMs = 300)
     public Settlement settle(UUID groupId, UUID payerId, UUID receiverId, BigDecimal amount, UUID initiatedBy) {
+        log.debug("settle called: groupId={} payerId={} receiverId={} amount={} initiatedBy={}", groupId, payerId, receiverId, amount, initiatedBy);
+
         if (groupId == null || payerId == null || receiverId == null) {
+            log.warn("Invalid settle request: missing identifiers groupId={} payerId={} receiverId={}", groupId, payerId, receiverId);
             throw new BadRequestException("groupId, payerId and receiverId are required");
         }
         if (amount == null || amount.signum() <= 0) {
+            log.warn("Invalid settle request: non-positive amount={} for groupId={}", amount, groupId);
             throw new BadRequestException("amount must be positive");
         }
         if (payerId.equals(receiverId)) {
+            log.warn("Invalid settle request: payer equals receiver for groupId={} user={}", groupId, payerId);
             throw new BadRequestException("payer and receiver cannot be the same user");
         }
 
@@ -64,6 +74,7 @@ public class SettlementServiceImpl implements SettlementService {
         boolean initiatorMember = groupMemberRepository.findByGroupId(groupId).stream()
                 .anyMatch(m -> m.getUserId().equals(initiatedBy) && "ACTIVE".equalsIgnoreCase(m.getStatus()));
         if (!initiatorMember) {
+            log.warn("Initiator {} is not a member of group {}", initiatedBy, groupId);
             throw new ForbiddenException("Initiator is not a group member");
         }
 
@@ -72,6 +83,7 @@ public class SettlementServiceImpl implements SettlementService {
                 .filter(m -> "ACTIVE".equalsIgnoreCase(m.getStatus()))
                 .map(GroupMember::getUserId).collect(Collectors.toSet());
         if (!members.contains(payerId) || !members.contains(receiverId)) {
+            log.warn("Payer {} or receiver {} not a member of group {}", payerId, receiverId, groupId);
             throw new NotFoundException("Payer or receiver not a member of the group");
         }
 
@@ -89,6 +101,7 @@ public class SettlementServiceImpl implements SettlementService {
                 .build();
         Settlement savedSettlement = settlementRepository.save(settlement);
         UUID sid = savedSettlement.getId();
+        log.info("Created PENDING settlement id={} group={} payer={} receiver={} amount={}", sid, groupId, payerId, receiverId, amt);
 
         // Create ledger entries linked to settlement id
         LedgerEntry debit = LedgerEntry.builder()
@@ -114,12 +127,14 @@ public class SettlementServiceImpl implements SettlementService {
                 .build();
 
         ledgerEntryRepository.saveAll(Arrays.asList(debit, credit));
+        log.debug("Saved ledger entries for settlement id={}", sid);
 
         // Update balances with optimistic-lock retry
         int attempt = 0;
         while (true) {
             attempt++;
             try {
+                log.debug("Applying balances for settlement {} attempt {}/{}", sid, attempt, MAX_RETRIES);
                 Optional<Balance> payerOpt = balanceRepository.findByGroupIdAndUserId(groupId, payerId);
                 Balance payerBal = payerOpt.orElseGet(() -> {
                     Balance b = Balance.builder()
@@ -128,7 +143,9 @@ public class SettlementServiceImpl implements SettlementService {
                             .balance(MoneyUtils.scale(BigDecimal.ZERO))
                             .createdAt(LocalDateTime.now())
                             .build();
-                    return balanceRepository.save(b);
+                    Balance saved = balanceRepository.save(b);
+                    log.debug("Inserted new payer balance row for user {} group {} id={}", payerId, groupId, saved.getId());
+                    return saved;
                 });
 
                 Optional<Balance> recvOpt = balanceRepository.findByGroupIdAndUserId(groupId, receiverId);
@@ -139,7 +156,9 @@ public class SettlementServiceImpl implements SettlementService {
                             .balance(MoneyUtils.scale(BigDecimal.ZERO))
                             .createdAt(LocalDateTime.now())
                             .build();
-                    return balanceRepository.save(b);
+                    Balance saved = balanceRepository.save(b);
+                    log.debug("Inserted new receiver balance row for user {} group {} id={}", receiverId, groupId, saved.getId());
+                    return saved;
                 });
 
                 payerBal.setBalance(MoneyUtils.scale(payerBal.getBalance().subtract(amt)));
@@ -148,13 +167,16 @@ public class SettlementServiceImpl implements SettlementService {
                 balanceRepository.save(payerBal);
                 balanceRepository.save(receiverBal);
 
+                log.info("Balances updated for settlement id={} on attempt {}: payerBalance={} receiverBalance={}", sid, attempt, payerBal.getBalance(), receiverBal.getBalance());
                 // success -> break loop
                 break;
             } catch (OptimisticLockingFailureException ex) {
+                log.warn("OptimisticLockingFailure on attempt {}/{} for settlement {}: {}", attempt, MAX_RETRIES, sid, ex.getMessage());
                 if (attempt >= MAX_RETRIES) {
                     // NOTE: saving FAILED here may be rolled back with outer tx.
                     savedSettlement.setStatus("FAILED");
                     settlementRepository.save(savedSettlement);
+                    log.error("Marking settlement {} as FAILED after {} attempts", sid, attempt);
                     throw ex;
                 }
                 try {
@@ -168,6 +190,8 @@ public class SettlementServiceImpl implements SettlementService {
 
         // Mark settlement completed
         savedSettlement.setStatus("COMPLETED");
-        return settlementRepository.save(savedSettlement);
+        Settlement finalSaved = settlementRepository.save(savedSettlement);
+        log.info("Settlement {} marked COMPLETED and persisted", finalSaved.getId());
+        return finalSaved;
     }
 }
